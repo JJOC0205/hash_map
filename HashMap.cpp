@@ -90,9 +90,20 @@ void hashMap::getClosestPrime() {
 }
 void hashMap::reHash() {
 
+	if(numKeys/mapSize >= .70){
+		getClosestPrime();
+		int index = 0;
+		hashMap **longer_map = new hashMap(map[0],numKeys,mapSize,hashfn,collfn,0,0);
+		for(int i = 0; i <mapSize; i++){
+			index = hashfn(map[i]);
+
+		}
+	}
+	delete [] map;
 }
+
 int hashMap::coll1(int h, int i, string k) {
-	while((map[h] != NULL || (map[h]->keyword != k)) && (h < mapSize)){
+	 while((map[h] != NULL || (map[h]->keyword != k)) && (h < mapSize)){
 		h++;
 	}
 	return h;

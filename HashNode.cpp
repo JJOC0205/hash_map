@@ -30,7 +30,7 @@ hashNode::hashNode(string s, string v){
 	currSize = 1;
 }
 void hashNode::addValue(string v) {
-	// adding a valu to the end of the value array associated 
+	// adding a value to the end of the value array associated
 	// with a key
 	for(int i = 0;i < valuesSize;i++){
 		if(values[i+1] == ""){
