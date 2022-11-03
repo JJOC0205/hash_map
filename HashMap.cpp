@@ -24,12 +24,18 @@ int hashMap::getIndex(string k) {
 }
 
 int hashMap::calcHash2(string k){
+	int len = k.length;
+	int h = 0;
 	getClosestPrime();
-	return k%mapSize;
+	for (int i = len - 1; i > 0; i--){
+		h = (11*h + (int)k[i]) % mapSize;
+	}
+	return h;
 }
 int hashMap::calcHash1(string k){
+	int hashed_key = (int)k[0] + ((int)k[1]*27) + ((int)k[2]*729);
 	getClosestPrime();
-	return k%mapSize;
+	return hashed_key % mapSize;
 }
 void hashMap::getClosestPrime() {
 	bool found = false;
