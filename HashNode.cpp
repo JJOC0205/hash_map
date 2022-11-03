@@ -35,6 +35,7 @@ void hashNode::addValue(string v) {
 	for(int i = 0;i < valuesSize;i++){
 		if(values[i+1] == ""){
 			values[i+1] = v;
+			currSize++;
 			break;
 		}
 	}
