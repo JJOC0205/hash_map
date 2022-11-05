@@ -1,33 +1,37 @@
 
 
-#include "hashMap.hpp"
-#include "hashNode.hpp"
+#include "HashMap.hpp"
+#include "HashNode.hpp"
 #include <iostream>
 #include <math.h>
 using namespace std;
 
 hashMap::hashMap(bool hash1, bool coll1) {
-	first = map[0];
+	first = "";
 	numKeys = 0;
 	mapSize = 500;
 	hashfn = hash1;
 	collfn = coll1;
 	collisions = 0;
 	hashcoll = 0;
+	map = new hashNode *[mapSize];
 	for (int i = 0; i < mapSize; i++){
 		map[i] = NULL;
 	}
+
 }
 void hashMap::addKeyValue(string k, string v) {
 	int index = getIndex(k);
 	bool added = false;
 	if (index == -1){
 		if (hashfn){
+			cout << "add: " << index  << " " << k << endl;
 			index = calcHash1(k);
 		} else {
 			index = calcHash2(k);
 		}
-		map[index] = new hashNode(k, v);
+		map[index] = new hashNode[mapSize];
+		cout << map[index] << endl;
 		added = true;
 	}
 	while (!added){
@@ -55,12 +59,13 @@ int hashMap::getIndex(string k) {
 	int index = 0;
 	if (hashfn){
 		index = calcHash1(k);
+		cout << "getIndex: " << index << " " << k << endl;
 	} else {
 		index = calcHash2(k);
 	}
-	if (map[index] != NULL && (map[index]->keyword == k)){
+	if ((map[index] != NULL) && (map[index]->keyword == k)){
 		return index;
-	} else if (map[index != NULL && (map[index]->keyword != k)]){
+	} else if ((map[index] != NULL) && (map[index]->keyword != k)){
 		if (collfn){
 			hashcoll++;
 			return coll1(index, hashcoll, k);
@@ -74,7 +79,7 @@ int hashMap::getIndex(string k) {
 }
 
 int hashMap::calcHash2(string k){
-	int len = k.length;
+	int len = k.length();
 	int h = 0;
 	for (int i = len - 1; i > 0; i--){
 		h = (11*h + (int)k[i]) % mapSize;
@@ -102,14 +107,20 @@ void hashMap::reHash() {
 	if(numKeys/mapSize >= .70){
 		int index = 0;
 		int tmp = mapSize;
-		hashNode **longer_map;
 		getClosestPrime();
+		hashNode **longer_map = new hashNode *[mapSize];
 		for(int i = 0; i < mapSize; i++){
 			longer_map[i] = NULL;
 		}
+		//while loop, add key values
 		for(int i = 0; i < tmp; i++){
 			if (map[i] != NULL){
-				longer_map[i] = map[i];
+				if (hashfn){
+					index = calcHash1(map[i]->keyword);
+				} else {
+					index = calcHash2(map[i]->keyword);
+				}
+				longer_map[index] = map[i];
 			}
 		}
 		delete [] map;
@@ -117,7 +128,7 @@ void hashMap::reHash() {
 	}
 }
 int hashMap::coll1(int h, int i, string k) {
-	while((map[h] != NULL || (map[h]->keyword != k)) && (h < mapSize)){
+	while(((map[h] != NULL) || (map[h]->keyword != k)) && (h < mapSize)){
 		collisions++;
 		h++;
 	}

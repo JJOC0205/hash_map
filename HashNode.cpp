@@ -1,6 +1,6 @@
 
 
-#include "hashMap.hpp"
+#include "HashMap.hpp"
 #include <iostream>
 #include <cstdlib>
 #include <time.h>
@@ -33,8 +33,8 @@ void hashNode::addValue(string v) {
 	// adding a valu to the end of the value array associated 
 	// with a key
 	for(int i = 0;i < valuesSize;i++){
-		if(values[i+1] == ""){
-			values[i+1] = v;
+		if(values[i] == ""){
+			values[i] = v;
 			currSize++;
 			break;
 		}
