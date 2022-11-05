@@ -25,13 +25,13 @@ void hashMap::addKeyValue(string k, string v) {
 	bool added = false;
 	if (index == -1){
 		if (hashfn){
-			cout << "add: " << index  << " " << k << endl;
+//			cout << "add: " << index  << " " << k << endl;
 			index = calcHash1(k);
 		} else {
 			index = calcHash2(k);
 		}
 		map[index] = new hashNode[mapSize];
-		cout << map[index] << endl;
+//		cout << map[index] << endl;
 		added = true;
 	}
 	while (!added){
@@ -59,7 +59,7 @@ int hashMap::getIndex(string k) {
 	int index = 0;
 	if (hashfn){
 		index = calcHash1(k);
-		cout << "getIndex: " << index << " " << k << endl;
+//		cout << "getIndex: " << index << " " << k << endl;
 	} else {
 		index = calcHash2(k);
 	}
@@ -136,9 +136,14 @@ int hashMap::coll1(int h, int i, string k) {
 
 }
 int hashMap::coll2(int h, int i, string k) {
-
+	double count = 0.0;
+	while((map[h] != NULL || (map[h]->keyword != k)) && (h < mapSize)){
+		h = (int)(h + pow(count,count))% mapSize;
+		collisions++;
+		count++;
+	}
+	return h;
 }
-
 void hashMap::printMap() {
 	cout << "In printMap()" << endl;
 	for (int i = 0; i < mapSize; i++) {
