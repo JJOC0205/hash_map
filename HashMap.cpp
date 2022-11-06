@@ -9,7 +9,7 @@ using namespace std;
 hashMap::hashMap(bool hash1, bool coll1) {
 	first = "";
 	numKeys = 0;
-	mapSize = 4000;
+	mapSize = 101;
 	hashfn = hash1;
 	collfn = coll1;
 	collisions = 0;
@@ -37,7 +37,7 @@ void hashMap::addKeyValue(string k, string v) {
 		numKeys--;
 	}
 	numKeys++;
-	if ((float)(numKeys / mapSize) >= 0.7){
+	if ((numKeys / mapSize) >= 0.7){
 		reHash();
 	}
 }
@@ -45,24 +45,20 @@ int hashMap::getIndex(string k) {
 	int index = 0;
 	if (hashfn){
 		index = calcHash1(k);
-	}
-	else {
+	} else {
 		index = calcHash2(k);
 	}
 	if ((map[index] != NULL) && (map[index]->keyword == k)){
 		return index;
-	}
-	else if ((map[index] != NULL) && (map[index]->keyword != k)){
+	} else if ((map[index] != NULL) && (map[index]->keyword != k)){
 		if (collfn) {
 			hashcoll++;
 			return coll1(index, hashcoll, k);
-		}
-		else {
+		} else {
 			hashcoll++;
 			return coll2(index, hashcoll, k);
 		}
-	}
-	else {
+	} else {
 		return -1;
 	}
 }
@@ -103,22 +99,23 @@ void hashMap::getClosestPrime() {
 	}
 }
 void hashMap::reHash() {
-	int oldSize = mapSize;
-	hashNode ** oldMap = map;
 	int index;
+	int oldSize = mapSize;
 	getClosestPrime();
-	hashNode ** newMap = new hashNode *[mapSize];
-	for (int i = 0; i < mapSize;i++){
-		newMap[i] = NULL;
+	hashNode **old = map;
+	map = new hashNode *[mapSize];
+	for (int i = 0; i < mapSize; i++){
+		map[i] = NULL;
 	}
-	for(int i = 0; i < oldSize;i++){
-		if(oldMap[i] != NULL){
-			index = getIndex(oldMap[i]->keyword);
-			newMap[index] = oldMap[i];
+	for (int i = 0; i < oldSize; i++){
+		if (old[i] != NULL){
+			index = getIndex(old[i]->keyword);
+			map[index] = old[i];
 		}
 	}
-
+	delete [] old;
 }
+
 int hashMap::coll1(int h, int i, string k) {
 	while((map[h] != NULL) && (map[h]->keyword != k) && (h < mapSize)){
 		collisions++;
@@ -128,13 +125,9 @@ int hashMap::coll1(int h, int i, string k) {
 
 }
 int hashMap::coll2(int h, int i, string k) {
-	cout << "Start coll2" << endl;
-	double count = 0.0;
-	while((map[h] != NULL || (map[h]->keyword != k))){
-		if(h >= mapSize){
-			h = 0;
-		}
-		h = (int)(h + pow(count,count))% mapSize;
+	int count = 0;
+	while((map[h] != NULL) && (map[h]->keyword != k) && (h < mapSize)){
+		h = (int)(h + (count * count)) % mapSize;
 		collisions++;
 		count++;
 	}

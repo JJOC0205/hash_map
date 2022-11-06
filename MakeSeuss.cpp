@@ -63,12 +63,11 @@ void makeSeuss::writeFile() {
 		key = value;
 		outfile << key << " ";
 		if (len == 11) {
-			outfile << "\n";
+			outfile << endl;
 			len = 0;
 		}
 		else len++;
 		value = ht->map[ht->getIndex(key)]->getRandValue();
-		cout << value << endl;
 		ct ++;
 	}
 	outfile.close();
