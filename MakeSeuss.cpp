@@ -13,7 +13,6 @@ makeSeuss::makeSeuss(string f1,string f2,bool hash1, bool coll1) {
 	ht = new hashMap(hash1,coll1);
 	newfile = f2;
 	fn = f1;
-	cout << "hashmap made" << endl;
 	readFile();
 	writeFile();
 }
@@ -58,9 +57,10 @@ void makeSeuss::writeFile() {
 	outfile << ht->first << " ";
 	string key = "";
 	string value = ht->map[ht->getIndex(ht->first)]->getRandValue();
+	cout << value << endl;
 	int ct = 0;
 	int len = 0;
-	while (ct < 500 &&  value != "") {
+	while (ct < 500 && value != "") {
 		key = value;
 		outfile << key << " ";
 		if (len == 11) {
@@ -69,6 +69,7 @@ void makeSeuss::writeFile() {
 		}
 		else len++;
 		value = ht->map[ht->getIndex(key)]->getRandValue();
+		cout << key << ": " << value << endl;
 		ct ++;
 	}
 	outfile.close();

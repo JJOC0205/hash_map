@@ -22,7 +22,6 @@ hashMap::hashMap(bool hash1, bool coll1) {
 }
 void hashMap::addKeyValue(string k, string v) {
 	int index = getIndex(k);
-	bool added = false;
 	if (index == -1){
 		if (hashfn){
 			index = calcHash1(k);
@@ -30,26 +29,18 @@ void hashMap::addKeyValue(string k, string v) {
 			index = calcHash2(k);
 		}
 		map[index] = new hashNode[mapSize];
-		//cout << map[index] << endl;
-		added = true;
 	}
-	while (!added){
-		if (map[index] == NULL){
-			map[index] = new hashNode(k, v);
-			//cout << index <<endl;
-			added = true;
-		} else if (map[index]->keyword == k){
-			map[index]->addValue(v);
-			cout << index <<endl;
-			added = true;
+	if (map[index] == NULL){
+		map[index] = new hashNode(k, v);
+	} else if (map[index]->keyword == k){
+		map[index]->addValue(v);
+	} else {
+		if (collfn){
+			hashcoll++;
+			index = coll1(index, hashcoll, k);
 		} else {
-			if (collfn){
-				hashcoll++;
-				index = coll1(index, hashcoll, k);
-			} else {
-				hashcoll++;
-				index = coll2(index, hashcoll, k);
-			}
+			hashcoll++;
+			index = coll2(index, hashcoll, k);
 		}
 	}
 	if ((numKeys / mapSize) >= 0.7){
@@ -60,7 +51,6 @@ int hashMap::getIndex(string k) {
 	int index = 0;
 	if (hashfn){
 		index = calcHash1(k);
-//		cout << "getIndex: " << index << " " << k << endl;
 	} else {
 		index = calcHash2(k);
 	}
@@ -109,6 +99,7 @@ void hashMap::reHash() {
 		int index = 0;
 		int tmp = mapSize;
 		getClosestPrime();
+
 		hashNode **longer_map = new hashNode *[mapSize];
 		for(int i = 0; i < mapSize; i++){
 			longer_map[i] = NULL;
@@ -129,7 +120,7 @@ void hashMap::reHash() {
 	}
 }
 int hashMap::coll1(int h, int i, string k) {
-	while((map[h] != NULL) && (map[h]->keyword != k)){
+	while((map[h] != NULL) && (map[h]->keyword != k) && (h < mapSize)){
 		collisions++;
 		h++;
 	}

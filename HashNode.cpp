@@ -64,7 +64,6 @@ string hashNode::getRandValue() {
 	//will be the word that follows your key in your output 
 	//function, and it will also be the next key.
 	string new_word;
-	new_word = values[rand()%valuesSize];
-
+	new_word = values[rand()%currSize];
 	return new_word;
 }
