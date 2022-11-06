@@ -9,7 +9,7 @@ using namespace std;
 hashMap::hashMap(bool hash1, bool coll1) {
 	first = "";
 	numKeys = 0;
-	mapSize = 101;
+	mapSize = 4217;
 	hashfn = hash1;
 	collfn = coll1;
 	collisions = 0;
