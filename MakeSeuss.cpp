@@ -19,7 +19,7 @@ makeSeuss::makeSeuss(string f1,string f2,bool hash1, bool coll1) {
 void makeSeuss::readFile() {
 	ifstream infile(fn.c_str(),ios::in);     // open file
 	string key = "";
-	string value="";
+	string value= "";
 	infile>> key;
 
 	infile >> key;
@@ -57,7 +57,6 @@ void makeSeuss::writeFile() {
 	outfile << ht->first << " ";
 	string key = "";
 	string value = ht->map[ht->getIndex(ht->first)]->getRandValue();
-	cout << value << endl;
 	int ct = 0;
 	int len = 0;
 	while (ct < 500 && value != "") {
@@ -69,7 +68,7 @@ void makeSeuss::writeFile() {
 		}
 		else len++;
 		value = ht->map[ht->getIndex(key)]->getRandValue();
-		cout << key << ": " << value << endl;
+		cout << value << endl;
 		ct ++;
 	}
 	outfile.close();
