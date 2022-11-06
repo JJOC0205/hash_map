@@ -32,12 +32,10 @@ hashNode::hashNode(string s, string v){
 void hashNode::addValue(string v) {
 	// adding a valu to the end of the value array associated 
 	// with a key
-	for(int i = 0;i < valuesSize;i++){
-		if(values[i] == ""){
-			values[i] = v;
-			currSize++;
-			break;
-		}
+	values[currSize] = v;
+	currSize++;
+	if(currSize == valuesSize){
+		dblArray();
 	}
 }
 void hashNode::dblArray() {
@@ -48,13 +46,12 @@ void hashNode::dblArray() {
 	//Again, just copying over, no hash functions involved
 	//here.
 	string *new_values;
-	if(currSize == valuesSize){
-		new_values = new string[valuesSize*2];
-		for(int i = 0;i < valuesSize;i++){
-			new_values[i] = values[i];
-		}
-		delete [] values;
+	new_values = new string[valuesSize*2];
+	for(int i = 0;i < valuesSize;i++){
+		new_values[i] = values[i];
 	}
+	delete [] values;
+	values = new_values;
 }
 
 string hashNode::getRandValue() {
@@ -63,6 +60,9 @@ string hashNode::getRandValue() {
 	//randomly select one of those words and return it.  That 
 	//will be the word that follows your key in your output 
 	//function, and it will also be the next key.
+	if(currSize == 0){
+		return "";
+	}
 	string new_word;
 	new_word = values[rand()%currSize];
 	return new_word;

@@ -9,7 +9,7 @@ using namespace std;
 hashMap::hashMap(bool hash1, bool coll1) {
 	first = "";
 	numKeys = 0;
-	mapSize = 500;
+	mapSize = 4000;
 	hashfn = hash1;
 	collfn = coll1;
 	collisions = 0;
@@ -37,7 +37,7 @@ void hashMap::addKeyValue(string k, string v) {
 		numKeys--;
 	}
 	numKeys++;
-	if ((numKeys / mapSize) >= 0.7){
+	if ((float)(numKeys / mapSize) >= 0.7){
 		reHash();
 	}
 }
@@ -45,20 +45,24 @@ int hashMap::getIndex(string k) {
 	int index = 0;
 	if (hashfn){
 		index = calcHash1(k);
-	} else {
+	}
+	else {
 		index = calcHash2(k);
 	}
 	if ((map[index] != NULL) && (map[index]->keyword == k)){
 		return index;
-	} else if ((map[index] != NULL) && (map[index]->keyword != k)){
+	}
+	else if ((map[index] != NULL) && (map[index]->keyword != k)){
 		if (collfn) {
 			hashcoll++;
 			return coll1(index, hashcoll, k);
-		} else {
+		}
+		else {
 			hashcoll++;
 			return coll2(index, hashcoll, k);
 		}
-	} else {
+	}
+	else {
 		return -1;
 	}
 }
@@ -99,26 +103,21 @@ void hashMap::getClosestPrime() {
 	}
 }
 void hashMap::reHash() {
-	if(numKeys/mapSize >= .70){
-		int tmp = mapSize;
-		hashNode **tmpmap = map;
-		getClosestPrime();
-		hashNode **longer_map = new hashNode *[mapSize];
-		for(int i = 0; i < mapSize; i++){
-			longer_map[i] = NULL;
-		}
-		map = longer_map;
-		for(int i = 0; i < tmp; i++){
-			if (tmpmap[i] != NULL){
-				for (int j = 0; j < tmpmap[i]->currSize; j++){
-					if (tmpmap[i]->values[j] != ""){
-						addKeyValue(tmpmap[i]->keyword, tmpmap[i]->values[j]);
-					}
-				}
-			}
-		}
-		delete [] tmpmap;
+	int oldSize = mapSize;
+	hashNode ** oldMap = map;
+	int index;
+	getClosestPrime();
+	hashNode ** newMap = new hashNode *[mapSize];
+	for (int i = 0; i < mapSize;i++){
+		newMap[i] = NULL;
 	}
+	for(int i = 0; i < oldSize;i++){
+		if(oldMap[i] != NULL){
+			index = getIndex(oldMap[i]->keyword);
+			newMap[index] = oldMap[i];
+		}
+	}
+
 }
 int hashMap::coll1(int h, int i, string k) {
 	while((map[h] != NULL) && (map[h]->keyword != k) && (h < mapSize)){
@@ -129,8 +128,12 @@ int hashMap::coll1(int h, int i, string k) {
 
 }
 int hashMap::coll2(int h, int i, string k) {
+	cout << "Start coll2" << endl;
 	double count = 0.0;
-	while((map[h] != NULL || (map[h]->keyword != k)) && (h < mapSize)){
+	while((map[h] != NULL || (map[h]->keyword != k))){
+		if(h >= mapSize){
+			h = 0;
+		}
 		h = (int)(h + pow(count,count))% mapSize;
 		collisions++;
 		count++;
