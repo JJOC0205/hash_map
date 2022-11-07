@@ -9,7 +9,7 @@ using namespace std;
 hashMap::hashMap(bool hash1, bool coll1) {
 	first = "";
 	numKeys = 0;
-	mapSize = 4217;
+	mapSize = 211;
 	hashfn = hash1;
 	collfn = coll1;
 	collisions = 0;
@@ -113,7 +113,7 @@ void hashMap::reHash() {
 			map[index] = old[i];
 		}
 	}
-	delete [] old;
+	//delete [] old;
 }
 
 int hashMap::coll1(int h, int i, string k) {
@@ -125,12 +125,16 @@ int hashMap::coll1(int h, int i, string k) {
 
 }
 int hashMap::coll2(int h, int i, string k) {
-	int count = 0;
 	while((map[h] != NULL) && (map[h]->keyword != k) && (h < mapSize)){
-		h = (int)(h + (count * count)) % mapSize;
 		collisions++;
-		count++;
+		h+=2;
 	}
+//	int count = 0;
+//	while((map[h] != NULL) && (map[h]->keyword != k) && (h < mapSize)){
+//		h = (int)(h + pow()) % mapSize;
+//		collisions++;
+//		count++;
+//	}
 	return h;
 }
 void hashMap::printMap() {
